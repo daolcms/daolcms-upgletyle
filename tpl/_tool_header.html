@@ -1,0 +1,141 @@
+{Context::set("admin_bar","false")}
+{Context::addMetaTag('X-UA-Compatible','IE=edge',true)}
+{Context::addMetaTag('viewport','width=device-width, initial-scale=1.0')}
+
+<!-- Menu icon list -->
+{@$_menu_icon=array( 'fa fa-tachometer', 'glyphicon glyphicon-list', 'fa fa-comment', 'glyphicon glyphicon-stats', 'glyphicon glyphicon-link', 'fa fa-crop', 'glyphicon glyphicon-cog' )}
+
+<!-- Style sheet load -->
+<load target="css/style.css" />
+
+<!-- Javascript load -->
+<load target="js/tool_upgletyle.js" />
+<load target="js/jquery.cookie.js" />
+<load target="js/bootstrap.min.js" />
+<load target="js/respond.min.js" />
+<load target="js/jquery.noty.packaged.min.js" index="9999" />
+<load target="js/jquery.noty.packaged.theme-upgle.js" index="9999" />
+
+<div class="navbar navbar-upgle navbar-static-top">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="http://blog.upgle.com"><img src="img/hUpgletyle.png" width="127" height="42" alt="Upgletyle"/></a>
+    </div>
+
+    <div class="navbar-right" style="margin-top:6px;">
+		<div class="bts_btn-group">
+            <button type="button" class="bts_btn bts_btn-black bts_btn-sm dropdown-toggle" data-toggle="dropdown" >
+            {$upgletyle->getUpgletyleTitle()} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+            <li loop="$bloglist => $no,$val"><a href="{getSiteUrl($val->domain)}" target="_blank">{$val->getBrowserTitle()}</a></li>
+            </ul>
+        </div>
+        <div class="bts_btn-group">
+            <a href="{getUrl('','act','dispUpgletyleToolPostManageWrite')}" class="bts_btn bts_btn-black bts_btn-sm"><span class="glyphicon glyphicon-pencil"></span> {$lang->cmd_new_post}</a>
+            <a href="{getUrl('act','dispMemberLogout')}" class="bts_btn bts_btn-black bts_btn-sm"><span class="glyphicon glyphicon-log-out"></span> {$lang->cmd_logout}</a>
+        </div>
+    </div>
+    <!-- Start responsive menu -->
+    <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav accordion">
+            {@$i=0}
+            <block loop="$lang->upgletyle_first_menus => $key, $val" cond="!in_array($val, $custom_menu->hidden_menu)">
+            {@ 
+                unset($_sel);
+                $_sub = $lang->upgletyle_second_menus[$key];
+                $_attached = $custom_menu->attached_menu[$key];
+                if($act==$val[0]||in_array($act,array_keys($_sub))) $_sel = "active";
+                if($_sel == 'active') $eq = $i;                
+            }
+            <li class="{$_sel}"|cond="count($_sub)" class="nochild {$_sel}"|cond="!count($_sub)">
+                <a href="{getSiteUrl($upgletyle->domain,'','mid',$mid,'act',$val[0])}"|cond="$val[0]" class="first_menu" cond="$val[0]"><span class="{$_menu_icon[$i++]}"></span> {$val[1]}</a>
+                <div class="first_menu" cond="!$val[0]"><span class="{$_menu_icon[$i++]}"></span> {$val[1]}</div>
+
+                <!--submenu-->
+                <ul class="second_menu" cond="count($_sub) || count($_attached)">
+                    <li loop="$_sub => $k, $v" class="active"|cond="$k==$act" cond="!in_array(strtolower($k), $custom_menu->hidden_menu) && $k != 'dispUpgletyleToolConfigEditorComponents'">
+                        <a href="{getSiteUrl($upgletyle->domain,'','mid',$mid,'act',$k)}">{$v}</a>
+                    </li>
+                    <li loop="$_attached => $k, $v" class="active"|cond="$k==$act">
+                        <a href="{getSiteUrl($upgletyle->domain,'','mid',$mid,'act',$k)}">{$v}</a>
+                    </li>
+                </ul>
+                <!--/submenu-->
+            </li>
+            </block>
+            <li class="upgle-issue nochild"><a href="https://github.com/upgle/upgletyle/issues" target="_blank"><!--오류신고-->{$lang->upgletyle_bug_report}</a></li>
+        </ul>
+    </div>
+    <!-- /End responsive menu -->
+</div>
+
+<script type="text/javascript">
+jQuery(function($) {
+    var cookieList = function(cookieName) {
+        var cookie = $.cookie(cookieName);
+        var items = cookie ? cookie.split(/,/) : new Array();
+
+        return {    
+            "push": function(val) {  
+                    for (var i=items.length-1; i>=0; i--) {
+                        if (items[i] == val) return false;
+                    }
+                    items.push(val);
+                    $.cookie(cookieName, items.join(','));
+             },
+            "remove": function(val) {  
+                    for (var i=items.length-1; i>=0; i--) {
+                        if (items[i] == val) items.splice(i, 1);
+                    }
+                    $.removeCookie(cookieName);
+                    $.cookie(cookieName, items.join(','));
+             },
+            "clear": function() {        
+                    items = null;
+                    //$.cookie(cookieName, null);
+                    $.removeCookie(cookieName);
+            },
+            "items": function() {
+                    return items;
+            }
+        }
+    }
+
+    //Accordion menu
+    var cookieIndex = new cookieList("upgle-active-menu");
+    $.each(cookieIndex.items(), function() {
+      $('.accordion > li > .first_menu:eq('+this+')').next().show();
+      $('.accordion > li > .first_menu:eq('+this+')').parent().addClass('clicked');
+    });
+
+    $(window).resize(function(){
+      if($(document).width() >= 860) {
+        $('.accordion > li > .first_menu:eq({$eq})').next().show();
+        $('.accordion > li > .first_menu:eq({$eq})').parent().addClass('clicked');
+      }
+    }).resize();
+
+    $(".accordion > li > .first_menu").click(function(){
+        var navIndex = $('.accordion > li > .first_menu').index(this);
+
+        if($(document).width() >= 860)
+            if ($(this).parent().hasClass('active') || $(this).parent().hasClass('nochild')) return true;
+
+        $(this).next().slideToggle(160);
+        if (!$(this).parent().hasClass('clicked')) {
+            $(this).parent().addClass('clicked');
+            cookieIndex.push(navIndex);
+        }
+        else {
+            $(this).parent().removeClass('clicked');
+            cookieIndex.remove(navIndex);
+        }
+    });
+
+});
+</script>

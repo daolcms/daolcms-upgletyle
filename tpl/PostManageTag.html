@@ -1,0 +1,82 @@
+<include target="_tool_header.html" />
+
+<!-- Content -->
+<div class="wrap">
+
+    <div class="page-header">
+        <h4><i class="fa fa-tags"></i> {$lang->upgletyle_second_menus[1]['dispUpgletyleToolPostManageTag']} <small>포스트 작성시 사용한 태그를 관리합니다.</small></h4>
+    </div>
+
+    <form method="post" onsubmit="return false">
+
+        <div class="row">
+            <div class="col-sm-5 col-sm-push-7">
+                <!-- Tag Modify -->
+                <fieldset class="well well-lg" style="margin-top:30px" cond="$selected_tag">
+                    <legend>{$lang->update_tag}</legend>
+                    <input name="selected_tag" type="hidden" value="{$selected_tag}" /> 
+					<div class="form-group">
+						<label for="exampleInputEmail1">{$lang->tag_name} :</label>
+						<input name="tag" type="email" class="form-control" value="{$selected_tag}" />
+					</div>
+					<div class="input-group">
+						<span class="input-group-btn">
+						<button type="button" class="bts_btn bts_btn-default bts_btn-sm" onclick="updateTag(this)">{$lang->cmd_modify}...</button>
+						</span>
+						<button type="button" class="bts_btn bts_btn-default bts_btn-sm" onclick="deleteTag(this)">{$lang->cmd_delete}</button>
+					</div>
+
+					<div class="form-group" style="margin-top:20px" cond="$with_used_tag_list">
+						<label>{$lang->tag_with_tags}</label>
+                        <!--@foreach($with_used_tag_list as $k => $v)-->
+                            <!--@if($v->tag != $selected_tag)-->
+                                <dd><a href="{getUrl('selected_tag', $v->tag)}">{$v->tag}</a> ({$v->count})</dd>
+                            <!--@end-->
+                        <!--@end-->
+					</div>
+
+                </fieldset>
+                <!-- /Tag Modify -->
+            </div>
+            <div class="col-sm-7 col-sm-pull-5">
+
+				<div class="table-guide" style="margin-top:0">
+					<p class="info">{sprintf($lang->total_tag_result, $tag_list_count)}</p>
+				</div>
+				<table class="table table-hover table-bordered" style="border-bottom:0; margin-bottom:0;margin-top:7px">
+					<thead>
+						<tr>
+							<th scope="col"><a href="{getUrl('sort_index','tag')}">{$lang->tag} <i class="fa fa-angle-down"></i></a></th>
+							<th scope="col" class="text-center"><a href="{getUrl('sort_index','count')}">{$lang->used_documents} <i class="fa fa-angle-down"></i> </a></th>
+						</tr>
+					</thead>
+				</table>
+				<div style="overflow: auto; height: 400px;">
+				<table class="table table-hover table-bordered" style="border-top:0;margin-bottom:0;">
+					<tbody>
+
+	                    <!--@if(!$tag_list)-->
+						<tr>
+							<td colspan="2" class="text-center">{$lang->none_tags}</td>
+						</tr>
+						<!--@else-->
+						<tr class="active"|cond="$tag->tag==$selected_tag" loop="$tag_list => $key, $tag">
+							<td><a href="{getUrl('selected_tag',$tag->tag)}">{$tag->tag}</a></td>
+							<td class="sum text-center">{$tag->count}</td>
+						</tr>
+						<!--@end-->
+
+					</tbody>
+				</table>
+				</div>
+			</div>
+
+        </div>
+    </form>	
+</div>
+
+<script type="text/javascript">
+jQuery(function($) {
+
+});
+</script>

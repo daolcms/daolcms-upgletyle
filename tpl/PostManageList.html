@@ -1,0 +1,178 @@
+<include target="_tool_header.html" />
+
+
+<!-- Content -->
+<div class="wrap">
+    <div class="page-header">
+        <h4><i class="fa fa-th-list"></i> {$lang->upgletyle_second_menus[1]['dispUpgletyleToolPostManageList']} <small>작성하신 포스트를 확인합니다.</small></h4>
+    </div>
+
+    <ul class="nav nav-pills nav-upgle">
+        <li class="active"|cond="!$published">
+            <a href="{getUrl('', 'mid', $mid, 'vid', $vid, 'act', $act, 'sort_index','','published','')}">{$lang->document_all}</a>
+        </li>
+        <li class="active"|cond="$published==1">
+            <span class="line"></span>
+            <a href="{getUrl('', 'mid', $mid, 'vid', $vid, 'act', $act, 'sort_index','','published','1')}">{$lang->document_published}</a>
+        </li>
+        <li class="active"|cond="$published==-1">
+            <span class="line"></span>
+            <a href="{getUrl('', 'mid', $mid, 'vid', $vid, 'act', $act, 'sort_index','','published','-1')}">{$lang->document_reserved}</a>
+        </li>
+    </ul>
+
+    <div class="table-guide table-guide-responsive row clearfix" style="margin-top:28px">
+		<div class="col-md-4">
+			<p class="info">
+				<!--@if($search_keyword)-->{sprintf($lang->search_result_count,$page_navigation->total_count)}<!--@else-->{sprintf($lang->total_result_count,$page_navigation->total_count)}<!--@end-->
+			</p>
+		</div>
+		<div class="col-md-8 text-right">
+			<fieldset class="search_box">
+				<legend>{$lang->cmd_search}</legend>
+				<form action="{Context::getRequestUri()}" class="form-inline">
+					<input type="hidden" name="published" value="{$published}" />
+					<input type="hidden" name="vid" value="{$vid}" />
+					<input type="hidden" name="act" value="{$act}" />
+					<input type="hidden" name="mid" value="{$mid}" />
+					<div class="form-group">
+					<select name="search_category_srl" class="form-control input-sm">
+						<!--@foreach($category_list as $key => $val)-->
+						<option value="{$val->category_srl}" <!--@if($search_category_srl==$val->category_srl)-->selected="selected"<!--@end-->>{$val->title}</option>
+						<!--@end-->
+					</select>
+					</div>
+					<div class="form-group">
+					<select name="search_target" class="form-control input-sm">
+						<!--@foreach($search_option as $key => $val)-->
+						<option value="{$key}" <!--@if($search_target==$key)-->selected="selected"<!--@end-->>{$val}</option>
+						<!--@end-->
+					</select>
+					</div>
+					<div class="form-group">
+					<input name="search_keyword" type="text" title="{$lang->cmd_search}" class="form-control input-sm" value="{htmlspecialchars($search_keyword)}"/>
+					</div>
+					<input type="submit" value="{$lang->cmd_search}" class="bts_btn bts_btn-default bts_btn-sm" />
+				</form>
+			</fieldset>
+		</div>
+    </div>
+    <!-- /listHeader -->
+    <!-- Table Data -->
+    <fieldset style="margin-top:10px">
+        <legend>{$lang->my_document_management}</legend>
+        <form action="" method="post">
+            <table cellspacing="0" summary="{$lang->content_list}" class="table table-hover table-condensed">
+                <thead>
+                    <tr>
+                        <th scope="col" width="15">
+                            <input type="checkbox" class="inputCheck" onclick="jQuery('input.boxlist').click()" />
+                        </th>
+                        <th scope="col" width="14%" class="visible-lg visible-md visible-sm"  >{$lang->category}</th>
+                        <th scope="col" width="44">{$lang->status}</th>
+                        <th scope="col">{$lang->title}</th>
+                        <th scope="col" width="145" class="visible-lg visible-md">관리</th>
+                        <th scope="col" width="10" class="visible-lg visible-md visible-sm">&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--@if(count($post_list)==0)-->								
+                    <tr>
+                        <td class="noData" colspan="9"><p>{sprintf($lang->no_post,getUrl('','act','dispUpgletyleToolPostManageWrite'))}</p></td>
+                    </tr>
+                    <!--@else-->
+                    <tr loop="$post_list => $no, $post">
+                        <td>
+                            <input type="checkbox" name="document_srl" value="{$post->document_srl}" class="inputCheck boxlist" />
+                        </td>
+                        <td class="visible-lg visible-md visible-sm">{$category_list[$post->get('category_srl')]->title}&nbsp;</td>
+                        <td>
+                            <!--@if($post->type=='temp')-->
+                                <a href="{getUrl('act','dispUpgletyleToolPostManagePublish','document_srl',$post->document_srl,'page',$page)}" title="{$lang->click_publish}" alt="{$lang->click_publish}"><strong class="publishState draft"><span>{$lang->temp}</span></strong></a>
+                            <!--@else if($post->isSecret())-->
+                                <span class="label label-secret">{$lang->secret}</span>
+                            <!--@else if($post->type=='reserve')-->
+                                <span class="label label-reserved">{$lang->reserve}</span>
+                            <!--@else if($post->type=='save')-->
+                                <span class="label label-saved">{$lang->saved}</span>
+                            <!--@else-->
+                                <span class="label label-published">{$lang->publish}</span>
+                            <!--@end-->
+                        </td>
+                        <td>
+							<div class="title">
+							<a href="{getUrl('act','dispUpgletyleToolPostManageWrite','document_srl',$post->document_srl,'page',$page)}" class="title" title="Tag : {$post->get('tags')}">{$post->getTitle()}</a>
+							<span class="hide_menu">
+							<a href="{getUrl('','document_srl',$post->document_srl)}" target="_blank"><i class="fa fa-sign-out"></i>보기</a>
+							</span>
+							</div>
+                        </td>
+                        <td class="visible-lg visible-md">
+
+                            <div class="bts_btn-group">
+                            <button type="button" onclick="doTogglePostItem({$post->document_srl}, 'comment')" class="bts_btn bts_btn-default bts_btn-xs toggle-{$offon[$post->allowComment()]}"><span class="glyphicon glyphicon-comment"></span></button>
+                            <button type="button" onclick="doTogglePostItem({$post->document_srl}, 'trackback')" class="bts_btn bts_btn-default bts_btn-xs toggle-{$offon[$post->allowTrackback()]}"><span class="glyphicon glyphicon-link"></span></button>
+                            <button type="button" onclick="doTogglePostItem({$post->document_srl}, 'secret')" class="bts_btn bts_btn-default bts_btn-xs toggle-{$offon[$post->isSecret()]}"><span class="glyphicon glyphicon-lock"></span></button>
+                            </div>
+
+                            <!--@if($post->type=='save' || $post->type=='temp')-->
+                            <a href="{getUrl('act','dispUpgletyleToolPostManagePublish','document_srl',$post->document_srl,'page',$page)}" class="bts_btn bts_btn-default bts_btn-xs">{$lang->publish_go}</a>
+                            <!--@else-->
+                            <a href="{getUrl('act','dispUpgletyleToolPostManagePublish','document_srl',$post->document_srl,'page',$page)}" class="bts_btn bts_btn-default bts_btn-xs">{$lang->publish_update_go}</a>
+                            <!--@end-->
+                        </td>
+                        <td class="visible-lg visible-md visible-sm text-center">
+                            <button type="button" class="item-deletebutton" onclick="trashPostItem({$post->document_srl},{$page})"><span class="text-hide">{$lang->cmd_delete}</span></button>
+                        </td>
+                    </tr>
+                    <!--@end-->
+                </tbody>
+            </table>
+
+            <div class="item-changecontroller pull-left">
+                {$lang->selected_articles}
+                <!-- Single button -->
+                <div class="bts_btn-group dropup">
+                  <button type="button" class="bts_btn bts_btn-default bts_btn-sm dropdown-toggle" data-toggle="dropdown">
+                    카테고리 변경 <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <!--@foreach($category_list as $key => $val)-->
+                    <li><a href="javascript:updatePostItemsCategory('{$mid}',{$val->category_srl},{$page})">{$val->text}</a></li>
+                    <!--@end-->
+                  </ul>
+                </div>
+                <div class="bts_btn-group dropup">
+                  <button type="button" class="bts_btn bts_btn-default bts_btn-sm dropdown-toggle" data-toggle="dropdown">
+                    {$lang->set_publish} <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="javascript:updatePostItemsSecret('N',{$page})">{$lang->document_open}</a></li>
+                    <li><a href="javascript:updatePostItemsSecret('Y',{$page})">{$lang->document_close}</a></li>
+                  </ul>
+                </div>
+                <button type="button" class="bts_btn bts_btn-default bts_btn-sm" onclick="trashPostItems({$page})"><img src="img/buttonTableDataX.gif" width="7" height="7" alt="" class="icon" /> {$lang->cmd_delete}</button>
+            </div>
+
+            <ul class="pagination-upgle pull-right">
+                <li class="prev"><a href="{getUrl('page','','mid',$mid)}"><span class="sr-only">&laquo;</span></a></li>
+                <block loop="$page_no = $page_navigation->getNextPage()">
+                <li class="active"|cond="$page==$page_no"><a href="{getUrl('page',$page_no,'mid',$mid)}">{$page_no}</a></li>
+                </block>
+                <li class="next"><a href="{getUrl('page',$page_navigation->last_page,'module_srl','')}"><span class="sr-only">&raquo;</span></a></li>
+            </ul>
+
+        </form>
+    </fieldset>
+    <!-- /Table Data -->
+
+</div>
+<!-- /Content -->
+
+
+
+<script>
+if(!xe.lang) xe.lang = {};
+xe.lang.msg_confirm_delete_post = '{$lang->msg_confirm_delete_post}';
+xe.lang.msg_confirm_delete = '{$lang->confirm_delete}';
+</script>

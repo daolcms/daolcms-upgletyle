@@ -1,0 +1,38 @@
+<include target="_tool_header.html" />
+
+<!-- Content -->
+<div class="wrap">
+				
+    <div class="page-header">
+        <h4><i class="fa fa-archive"></i> {$lang->upgletyle_second_menus[1]['dispUpgletyleToolPostManageDeposit']} <small>수집한 글감을 확인합니다.</small></h4>
+    </div>
+
+
+    <div class="row" style="margin-top:20px; margin-bottom:10px;">
+
+    <div class="col-md-4 col-md-push-8">
+        <div class="section bookmarklet">
+            <h3>{$lang->bookmarklet_install}</h3>
+            <p class="info">{$lang->about_bookmarklet}</p>
+            <a href="{$bookmark_url}" class="bts_btn bts_btn-primary bts_btn-block bts_btn-lg"><strong>{$lang->about_set_bookmarklet}</strong></a>
+        </div>
+        <div class="section bookmarkletHelp">
+            <h3>{$lang->about_use_bookmarklet}</h3>
+            <ul>
+            {@$_i=1}
+                <!--@foreach($lang->about_use_bookmarklet_item as $v)-->
+                <li class="item{$_i++}">{$v}</li>
+                <!--@end-->
+            </ul>
+        </div>
+    </div>		
+
+    <div class="col-md-8 col-md-pull-4">
+        <!--@if($page_navigation && $page_navigation->total_count>0)-->
+            <!--#include('PostManageDepositList.html')-->
+        <!--@else-->
+            <!--#include('PostManageDepositHelp.html')-->
+        <!--@end-->
+    </div>
+
+</div>

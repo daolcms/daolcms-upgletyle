@@ -1,0 +1,56 @@
+<!--#include("_tool_header.html")-->
+<!--%import("css/pagination.css",optimized=false)-->
+<!--%load_js_plugin("ui")-->
+
+<!-- Content -->
+<div class="wrap">
+    <div class="page-header">
+        <h4>{$lang->upgletyle_second_menus[6]['dispUpgletyleToolExtraMenuList']} <small>{$lang->about_upgletyle_extra_menu}</small></h4>
+    </div>
+
+
+	<div class="setUp">
+		<table summary="{$lang->content_list}" class="table table-hover table-upgle">
+		<thead>
+			<tr>
+				<th scope="col">{$lang->menu_name}</th> 
+				<th scope="col">{$lang->module}</th>
+				<th scope="col">-</th>
+			</tr>
+		</thead>
+			
+		<!--@if($extra_menu_list)-->
+		<tbody class="sort">
+		<!--@foreach($extra_menu_list->data as $k => $menu)-->
+			<tr style="cursor:n-resize">
+				<td><a href="{getUrl('','mid',$menu->mid)}">{$menu->name}</a></td>
+				<td>{$menu->module}</td>
+				<td><input type="hidden" name="" class="menu_mid" value="{$menu->mid}" />
+				<!--@if($menu->type=='text_page')-->
+                <a href="{getUrl('','act','dispUpgletyleToolExtraMenuInsert','menu_mid',$menu->mid)}" class="bts_btn bts_btn-xs bts_btn-default">{$lang->cmd_modify}...</a>
+				<!--@elseif($menu->type=='module_page')-->
+				<a href="{getUrl('','act','dispUpgletyleToolExtraMenuModuleInsert','menu_mid',$menu->mid)}" class="bts_btn bts_btn-xs bts_btn-default">{$lang->cmd_modify}...</a>
+				<!--@end-->
+				<span class="btnGray small"><button type="button" onclick="deleteExtraMenu('{$menu->mid}','{$lang->confirm_delete}')" class="bts_btn bts_btn-xs bts_btn-default"><img src="img/buttonTableDataX.gif" width="7" height="7" alt="" class="icon"> {$lang->cmd_delete}</button></span>
+				</td>
+			</tr>
+		<!--@end-->
+		</tbody>
+		<!--@end-->
+		</table>
+        <a href="{getUrl('','act','dispUpgletyleToolExtraMenuModuleInsert')}" class="bts_btn bts_btn-primary pull-right">{$lang->cmd_insert}</a>
+	</div>
+</div>
+<!-- /Content -->
+
+<script>//<![CDATA[
+	jQuery(function() {
+		jQuery('tbody.sort').sortable().bind('sortstop',function(e,ui){
+			var menu_mids = [];
+			jQuery('tbody.sort .menu_mid').each(function(){
+				menu_mids.push(jQuery(this).val());	
+			});
+			sortExtraMenu(menu_mids);
+		});
+	});
+//]]></script>

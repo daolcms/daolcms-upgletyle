@@ -1,0 +1,98 @@
+<include target="_tool_header.html" />
+
+<!--%load_js_plugin("ui.calendar")-->
+<load target="css/calendar.css" />
+
+<!-- Content -->
+<div class="wrap">
+    <div class="page-header">
+        <h4><span class="glyphicon glyphicon-book"></span> {$lang->upgletyle_second_menus[3]['dispUpgletyleToolStatisticsPopular']} <small>블로그에서 가장 인기있는 콘텐츠를 출력합니다.</small></h4>
+    </div>
+				
+    <!-- contentNavigation -->
+
+    <div class="statistics-nav">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <div class="statistics-calendar calendar">
+                    <div id="calendar-holder"></div>
+                    <button type="button" class="btnCalendar"><span>{$lang->calendar}</span></button>
+                    <h4 class="h4" id="str_selected_date">{$disp_selected_date}</h4>
+                    <input type="hidden" class="inputDate" value="{zdate($selected_date,'Y-m-d')}" />
+                    <script>
+                        jQuery(function($){
+                            {@ $_s = array_pop($lang->unit_week)}
+                            $('#calendar-holder').calendar({
+                                type : '{$type}',
+                                button : '#calendar-holder+button.btnCalendar',
+                                activeDate : "{zdate($selected_date,'Y/m/d')}",
+                                select : function(year, month, date) {
+                                    var str = year+'.'+(month>9?'':'0')+month+'.'+(date>9?'':'0')+date;
+                                    $("#str_selected_date").text(str);
+                                    moveDate();
+                                },
+                                lang : {
+                                    weekdays : '{$_s},{implode(',',$lang->unit_week)}',
+                                    today : '{$lang->today}',
+                                    prevmonth : '{$lang->before_month}',
+                                    nextmonth : '{$lang->after_month}',
+                                    close : '{$lang->cmd_close}'
+                                }
+                            });
+                        });
+                    </script>
+                    <button type="button" class="prevData" onclick="location.href='{$before_url}';return false;"><span>{$lang->before_day}</span></button>
+                    <button type="button" class="nextData" onclick="location.href='{$after_url}';return false;"><span>{$lang->after_day}</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- listHeader -->
+    <div class="listHeader">
+        <p class="info">{$lang->about_popular}</p>
+    </div>
+    <!-- /listHeader -->
+    
+    <!-- Table Data -->
+    <table summary="{$lang->popular_rank}" class="table table-hover table-upgle">
+        <thead>
+            <tr>
+                <th scope="col">{$lang->rank}</th>
+                <th scope="col" class="title">{$lang->title}</th>
+                <th scope="col" class="sum"|cond="$sort_index=='comment_count'">
+                    {$lang->comment} <button type="button" class="bts_btn bts_btn-default bts_btn-xs" onclick="document.location.href='{getUrl("sort_index","comment_count")}'"><span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">{$lang->order_desc}</span></button>
+                </th>
+                <th scope="col" class="sum"|cond="$sort_index=='trackback_count'">
+                    {$lang->trackback} <button type="button" class="bts_btn bts_btn-default bts_btn-xs" onclick="document.location.href='{getUrl("sort_index","trackback_count")}'"><span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">{$lang->order_desc}</span></button>
+                </th>
+                <th scope="col" class="sum"|cond="$sort_index=='readed_count'">
+                    {$lang->read} <button type="button" class="bts_btn bts_btn-default bts_btn-xs" onclick="document.location.href='{getUrl("sort_index","readed_count")}'"><span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">{$lang->order_desc}</span></button>
+                </th>
+                <th scope="col">{$lang->regdate}</th>
+            </tr>
+        </thead>
+
+                            
+        <tbody cond="!count($post_list)">
+            <tr>
+                <td class="noData" colspan="6"><p>{$lang->no_popular}</p></td>
+            </tr>
+        </tbody>
+        <tbody class="top3" cond="count($post_list)">
+            {@$_item_count=0}
+            <tr loop="$post_list => $no, $post">
+                <td class="rank">{$_item_count+1}</td>
+                <td class="title postTitle"><a href="{$post->getPermanentUrl()}" onclick="window.open(this.href); return false;">{$post->getTitle()}</a></td> 
+                <td class="<!--@if($sort_index=='comment_count')--> sum<!--@end-->">{$post->getCommentCount()}</td>
+                <td class="<!--@if($sort_index=='trackback_count')--> sum<!--@end-->">{$post->getTrackbackCount()}</td>
+                <td class="<!--@if($sort_index=='readed_count')--> sum<!--@end-->">{$post->get('readed_count')}</td>
+                <td>{zdate($post->get('last_update'),'Y.m.d')}</td>
+                {@$_item_count++}
+            </tr>
+        </tbody>
+    </table>
+    <!-- /Table Data -->
+    
+</div>
+<!-- /Content -->

@@ -1,0 +1,124 @@
+<include target="_tool_header.html" />
+
+<!-- Content -->
+<div class="wrap">
+    <div class="page-header">
+        <h4><i class="fa fa-envelope"></i>  {$lang->upgletyle_second_menus[2]['dispUpgletyleToolCommunicationGuestbook']} <small>블로그에 작성된 방명록을 모아볼 수 있습니다.</small></h4>
+    </div>
+
+    <!-- listHeader -->
+    <div class="table-guide table-guide-responsive row clearfix">
+		<div class="col-md-4">
+			<p class="info"> <!--@if($search_keyword)-->{sprintf($lang->search_result_count,$page_navigation->total_count)}<!--@else-->{sprintf($lang->total_result_count,$page_navigation->total_count)}<!--@end--></p>
+		</div>
+		<div class="col-md-8 text-right">
+		<fieldset class="search_box">
+			<legend>{$lang->cmd_search}</legend>
+            <form action="{Context::getRequestUri()}" class="form-inline">
+                <input type="hidden" name="act" value="{$act}" />
+                <input type="hidden" name="mid" value="{$mid}" />
+                <input type="hidden" name="vid" value="{$vid}" />
+                <div class="form-group">
+                <input name="search_keyword" type="text" value="{$search_keyword}" title="{$lang->cmd_search}" class="form-control input-sm" />
+                </div>
+                <input type="submit" value="{$lang->cmd_search}" class="bts_btn bts_btn-default bts_btn-sm" />
+            </form>
+        </fieldset>
+		</div>
+    </div>
+    <!-- /listHeader -->
+				
+    <!-- Table Data -->
+    <fieldset>
+        <legend>{$lang->manage_guestbook}</legend>
+        <form action="" method="post">
+            <table summary="{$lang->content_list}" class="table table-hover table-upgle table-condensed">
+                <thead>
+                    <tr>
+                        <th scope="col" class="text-center" width="35">
+                            <input type="checkbox" onclick="jQuery('input.boxlist').click()"/>
+                        </th>
+                        <th scope="col" class="text-center" width="80">{$lang->avatar}</th>
+                        <th scope="col">{$lang->comment}</th>
+                        <th scope="col">{$lang->email_address}</th>
+                        <th scope="col" class="text-center" width="90">{$lang->ipaddress}</th>
+                        <th scope="col" class="text-center" width="50">{$lang->status}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--@if(count($guestbook_list)==0)-->
+                        <tr>
+                            <td colspan="6" class="text-center"><p class="item-nodata">{$lang->no_guestbook}</p></td>
+                        </tr>
+
+                    <!--@else-->
+                        <!--@foreach($guestbook_list as $k => $v)-->
+                        <tr<!--@if($v->parent_srl>0)--> class="item-communication indent"<!--@else--> class="item-communication"<!--@end-->>
+                            <td class="text-center">
+                                <input type="checkbox" name="upgletyle_guestbook_srl" value="{$v->upgletyle_guestbook_srl}" class="inputCheck boxlist" />
+                            </td>
+                            <td class="thumb text-center">
+                                <!--@if($v->profile_image)-->
+                                <img src="{$v->profile_image}" alt="{$v->nick_name}" />
+                                <!--@else-->
+                                <img height="39" width="39" alt="" src="img/iconEmoticonDefault.gif" class="author"/>
+                                <!--@end-->
+                            </td>
+                            <td>
+                                <dl class="item-communication-content">
+                                    <dt><span class="member_{$v->member_srl}"><strong>{$v->nick_name}</strong></span> <span class="yymmdd">{zdate($v->regdate,"Y.m.d")}</span> <span class="hhmm">{zdate($v->regdate,"H:i")}</span></dt>
+                                    <dd>{$v->content}</dd>
+                                </dl>
+                            </td>
+                            <td class="item-communication-email">{$v->email_address}&nbsp;</td>
+                            <td class="item-communication-ipaddress text-center">{$v->ipaddress}</td>
+                            <td class="item-communication-state text-center"><!--@if($v->is_secret<0)-->{$lang->public}<!--@else--><em>{$lang->secret}</em><!--@end--></td>
+                        </tr>
+                        <tr class="item-communication-button">
+                            <td colspan="2"></td>
+                            <td colspan="6">
+                                <div class="clearfix">
+                                    <div class="pull-left">
+                                        <!--@if($v->parent_srl==0)-->
+                                        <a href="{getUrl('','mid',$mid,'act','dispUpgletyleToolCommunicationGuestbookReply','upgletyle_guestbook_srl',$v->upgletyle_guestbook_srl)}" class="bts_btn bts_btn-default bts_btn-xs">{$lang->cmd_reply_comment}</a>
+                                        <!--@end-->
+                                    </div>
+                                    <div class="pull-right">
+                                        <button type="button" onclick="updateGuestbookItemChangeSecret({$v->upgletyle_guestbook_srl},{$page})" class="bts_btn bts_btn-default bts_btn-xs"><!--@if($v->is_secret<0)-->{$lang->private}<!--@else-->{$lang->public}<!--@end--></button></span> 
+                                        <button type="button" onclick="openLayerAddDenyItem('{$v->upgletyle_guestbook_srl}','_addDenyGuestbookList')" class="bts_btn bts_btn-default bts_btn-xs">{$lang->cmd_deny}</button> 
+                                        <button type="button" onclick="if(confirm('{$lang->confirm_delete}')) deleteGuestbookItem({$v->upgletyle_guestbook_srl},{$page});return false;" class="bts_btn bts_btn-danger bts_btn-xs">{$lang->cmd_delete}</button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                    <!--@end-->
+                    <!--@end-->
+            </tbody>
+            </table>
+            
+            <div class="clearfix">
+                <!-- Changecontroller -->
+                <div class="item-changecontroller pull-left">
+                    {$lang->selected_articles}
+                    <button type="button" onclick="openLayerAddDeny('_addDenyGuestbookList')" class="bts_btn bts_btn-default bts_btn-sm">{$lang->cmd_deny}</button>
+                    <button type="button" onclick="deleteGuestbookItems({$page})" class="bts_btn bts_btn-default bts_btn-sm""><img src="img/buttonTableDataX.gif" width="7" height="7" alt="" class="icon" /> {$lang->cmd_delete}</button>
+                </div>
+                <!-- /Changecontroller -->
+
+                <ul class="pagination-upgle pull-right" cond="$page_navigation">
+                    <li class="prev"><a href="{getUrl('page','','mid',$mid)}"><span class="sr-only">&laquo;</span></a></li>
+                    <block loop="$page_no = $page_navigation->getNextPage()">
+                    <li class="active"|cond="$page==$page_no"><a href="{getUrl('page',$page_no,'mid',$mid)}">{$page_no}</a></li>
+                    </block>
+                    <li class="next"><a href="{getUrl('page',$page_navigation->last_page,'module_srl','')}"><span class="sr-only">&raquo;</span></a></li>
+                </ul>
+            </div>
+            
+        </form>
+    </fieldset>
+    <!-- /Table Data -->			
+</div>
+<!-- /Content -->
+	
+<!--include("_layerAddDeny.html")-->

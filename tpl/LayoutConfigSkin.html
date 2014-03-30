@@ -1,0 +1,44 @@
+<include target="_tool_header.html" />
+<!-- Content -->
+<div class="wrap">		
+    <div class="page-header">
+        <h4>{$lang->upgletyle_second_menus[5]['dispUpgletyleToolLayoutConfigSkin']} <small>블로그에 적용할 스킨을 설정합니다.</small></h4>
+    </div>
+
+    <div class="well well-lg">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="thumbnail" style="padding:10px; margin:0;">
+                <img src="{$cur_skin->large_screenshot}" alt="{htmlspecialchars($cur_skin->title)}" />
+                </div>
+                <p class="item-skinbedge"><img src="img/iconUsing.png" alt="{$lang->cmd_use_ing}" /></p>
+            </div>
+            <div class="col-sm-8">
+                <div class="page-header">
+                    <h4>{htmlspecialchars($cur_skin->title)} <small>by {$cur_skin->author}</small></h4>
+                </div>
+                <p>{$cur_skin->description}</p>
+                <a href="{getUrl('act','dispUpgletyleToolLayoutConfigEdit')}" class="bts_btn bts_btn-info bts_btn-sm">{$lang->cmd_edit_htmlcss}</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skin List -->
+    <div class="item-skinlist">
+        <ul>
+            <li loop="$skins => $key, $val">
+                <dl>
+                    <dt><a href="{getSiteUrl($upgletyle->domain, '', 'skin_preview', $key)}" onclick="window.open(this.href);return false;">{$val->title}</a></dt>
+                    <dd class="thumb"><img src="{$val->small_screenshot}" width="138" height="87" alt="{htmlspecialchars($val->title)}" /></dd>
+                    <dd class="download">
+                        <a href="{getSiteUrl($upgletyle->domain, '', 'preview_skin', $key)}" target="_blank" title="{$lang->cmd_new_window}" class="bts_btn bts_btn-default bts_btn-xs">{$lang->cmd_preview_skin}</a>
+                        <button type="button" onclick="if(confirm('{$lang->msg_select_skin}')) doSelectSkin('{$key}'); return false;" class="bts_btn bts_btn-default bts_btn-xs">{$lang->cmd_select_skin}</button>
+                    </dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+    <!-- /Skin List -->
+</div>
+<!-- /Content -->
+			

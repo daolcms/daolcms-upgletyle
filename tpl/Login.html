@@ -1,0 +1,63 @@
+{Context::set("admin_bar","false")}
+{Context::addMetaTag('X-UA-Compatible','IE=edge',true)}
+{Context::addMetaTag('viewport','width=device-width, initial-scale=1.0')}
+
+<load target="css/style.css" />
+<!--%import("js/tool_upgletyle.js")-->
+<!--%import("filter/upgletyle_login.xml")-->
+<style type="text/css">
+	body {background:none !important}
+</style>
+
+<div class="login-header">
+    <a href="http://blog.upgle.com" class="login-brand"><img src="img/hUpgletyle.png" width="128" height="42" alt="Upgletyle"/></a>
+</div>
+
+<!-- Content -->
+<div class="row">
+    <div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
+    <!-- Log On -->
+    <h2><img src="img/hUpgletyleLogOn.gif" width="110" height="39" alt="upgletyle" /></h2>
+    <form action="./" method="post" onsubmit="return procFilter(this, upgletyle_login)" id="defaultLogOn" class="well well-lg well-loginbox">
+        <fieldset>
+            <legend class="text-hide">{$lang->cmd_login}</legend>
+            <div class="form-group">
+                <label for="uid">{$lang->user_id}</label>
+                <input id="uid" name="user_id" type="text" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="uid">{$lang->password}</label>
+                <input id="upw" name="password" type="password" class="form-control" />
+            </div>
+            <div class="checkbox">
+            <label class="keep">
+            <input type="checkbox" name="keep_signed" value="Y" id="keepUid"  /> {$lang->keep_signed}
+            </label>
+            </div>
+            <p class="keepDesc">{$lang->about_keep_warning}</p>
+            <div class="pull-right">
+                <input name="" type="submit" value="{$lang->cmd_login}" class="bts_btn bts_btn-default"/>
+            </div>
+
+        </fieldset>
+    </form>
+    <!-- /Log On -->
+    </div>
+    
+</div>
+<!-- /Content -->
+
+
+
+<script>
+// <![CDATA[
+jQuery(function($){
+	$('#uid').focus();
+	var keepDesc = $('.keepDesc');
+	keepDesc.hide();
+	$('.keep').change(function(){
+		keepDesc.toggle();
+	});
+});
+// ]]>
+</script>

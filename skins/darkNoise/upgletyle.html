@@ -1,0 +1,51 @@
+<div id="upgletyle">
+	<div id="container">
+		<include target="header.html" />
+		<hr />
+		<!-- body -->
+		<div id="body">
+			<!-- content -->
+			<div id="content">
+				<!-- main -->
+				<div class="main">
+					<!--@if($upgletyle_mode=='module')-->
+						{$content}
+					<!--@elseif($upgletyle_mode=='profile')-->
+						<include target="profile.html" />
+					<!--@elseif($upgletyle_mode=='guestbook')-->
+						<include target="guestbook.html" />
+					<!--@elseif($upgletyle_mode=='tags')-->
+						<include target="tags.html" />
+					<!--@elseif($upgletyle_mode=='comment_form')-->
+						<include target="comment_form.html" />
+					<!--@elseif($upgletyle_mode=='list')-->
+						<include target="post.list.html" />
+					<!--@elseif($upgletyle_mode=='summary')-->
+						<include target="post.summary.html" />
+					<!--@else-->
+						<include target="post.read.html" />
+					<!--@end-->
+					<span class="end top"></span>
+					<span class="end btm"></span>
+				</div>
+				<!-- /main -->
+				<include target="pagination.post.html" />
+				<div class="galleryWidget" cond="$upgletyle_mode=='list' || $upgletyle_mode=='summary'">
+					<img class="zbxe_widget_output" widget="content" skin="default" content_type="document" list_type="gallery" option_view="thumbnail,title,regdate" order_target="list_order" order_type="desc" thumbnail_type="crop" thumbnail_width="149" thumbnail_height="104" cols_list_count="4" list_count="4" subject_cut_size="16" module_srls="16464" markup_type="list" />
+				</div>
+			</div>
+			<!-- /content -->
+			<hr />
+			<include target="aside.html" />
+		</div>
+		<!-- /body -->
+		<hr />
+		<!-- footer -->
+		<div id="footer">
+			<address>
+			Powered by <a href="http://blog.upgle.com/">Upgletyle</a>
+			</address>
+		</div>
+		<!-- /footer -->
+	</div>
+</div>
